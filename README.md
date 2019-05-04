@@ -26,7 +26,18 @@ build.sh
 
 ## Run
 
-Before running the QR Image Writer, you should put the image that you want to use as input into the same folder and call it `input.jpg` or `input.ppm`.
+Before running the QR Image Writer, you should put the image that you want to use as input into the same folder as `.jpg`, as `.bmp` or as `.ppm` file.
+
+You should then create a file called `input.json` containing info such as e.g.:
+
+```
+{
+	"baseurl": "http://www.asofterspace.com/",
+	"id": "index",
+	"picture": "input.jpg",
+	"logo": "logo.jpg"
+}
+```
 
 To now start up the QrImageWriter project after it has been built, you can call under Windows:
 

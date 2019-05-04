@@ -40,7 +40,12 @@ other
 # input and output files
 *.pdf
 *.ppm
+*.pbm
+*.pgm
 *.jpg
+*.png
+*.bmp
+*.json
 *.txt
 *.csv
 *.json
