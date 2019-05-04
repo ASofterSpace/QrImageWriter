@@ -26,7 +26,7 @@ build.sh
 
 ## Run
 
-Before running the QR Image Writer, you should put the image that you want to use as input into the same folder and call it `input.ppm`.
+Before running the QR Image Writer, you should put the image that you want to use as input into the same folder and call it `input.jpg` or `input.ppm`.
 
 To now start up the QrImageWriter project after it has been built, you can call under Windows:
 
