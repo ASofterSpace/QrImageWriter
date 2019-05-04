@@ -39,6 +39,7 @@ other
 
 # input and output files
 *.pdf
+*.ppm
 *.txt
 *.csv
 *.json
