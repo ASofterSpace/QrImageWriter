@@ -129,14 +129,14 @@ public class Main {
 		canvas.draw(logo, 1, 1);
 
 		// draw picture size onto the canvas
-		canvas.drawText(sizeText, null, canvas.getWidth() - (dH * 4), canvas.getHeight() - 10, null, "Arial", dV - 8, true);
+		canvas.drawText(sizeText, null, (Integer) (canvas.getWidth() - (dH * 4)), (Integer) (canvas.getHeight() - 10), null, "Arial", (Integer) (dV - 8), (Boolean) true);
 
 		// draw the QR code onto the canvas
 		qrCode.resizeBy(2, 2);
 		qrCode.rotateRight();
 		qrCode.rotateRight();
 		qrCode.expandTop(12, white);
-		qrCode.drawText(id, 3, null, null, 12, "Arial", 10, true);
+		qrCode.drawText(id, (Integer) 3, null, null, (Integer) 12, "Arial", (Integer) 10, (Boolean) true);
 		qrCode.rotateLeft();
 		canvas.draw(qrCode, (canvas.getWidth() - qrCode.getWidth()) / 2, 4 + canvas.getHeight() - qrCode.getHeight());
 		qrCode.rotateRight();
