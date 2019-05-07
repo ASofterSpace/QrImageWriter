@@ -35,7 +35,9 @@ You should then create a file called `input.json` containing info such as e.g.:
 	"baseurl": "http://www.asofterspace.com/",
 	"id": "index",
 	"picture": "input.jpg",
-	"logo": "logo.jpg"
+	"logo": "logo.jpg",
+	"width": 50,
+	"height": 40
 }
 ```
 

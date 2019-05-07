@@ -24,8 +24,8 @@ import java.util.List;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "QR Image Writer";
-	public final static String VERSION_NUMBER = "0.0.0.1(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "4. May 2019";
+	public final static String VERSION_NUMBER = "0.0.0.2(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "4. May 2019 - 7. May 2019";
 
 	public static void main(String[] args) {
 
@@ -52,6 +52,9 @@ public class Main {
 		String id = inputJson.getValue("id");
 		String picturePath = inputJson.getValue("picture");
 		String logoPath = inputJson.getValue("logo");
+		Integer width_cm = inputJson.getInteger("width");
+		Integer height_cm = inputJson.getInteger("height");
+		String sizeText = width_cm + " x " + height_cm + " cm";
 
 		// load the input pictures
 		Image canvas = ImageFile.readImageFromFile(new File(picturePath));
@@ -60,9 +63,23 @@ public class Main {
 		// generate QR code
 		Image qrCode = QrCodeFactory.createWhitespacedImageFromString(baseurl + id);
 
+		// calculate actual width etc.
+		int width = canvas.getWidth();
+		int height = canvas.getHeight();
+		// take width and height in cm and expand by 3 cm on each side
+		int eH = (width * 3) / width_cm; // expand horz
+		int eV = (height * 3) / height_cm; // expand vert
+		int eHp = eH + 1;
+		int eVp = eV + 1;
+		// take width and height in cm and get where the gray line goes by adding 2 cm everywhere
+		int dH = (width * 2) / width_cm; // dist horz
+		int dV = (height * 2) / height_cm; // dist vert
+		int dHp = dH + 1;
+		int dVp = dV + 1;
+
 		// expand the base image
 		ColorRGB white = new ColorRGB(255, 255, 255);
-		canvas.expand(89, 89, 89, 89, white);
+		canvas.expand(eV, eH, eV, eH, white);
 
 		// draw grid
 		int w = canvas.getWidth() - 1;
@@ -76,39 +93,51 @@ public class Main {
 		canvas.drawLine(w, 0, w, h, gray);
 
 		// inner perimeter
-		canvas.drawLine(59, 58, w-59, 58, gray);
-		canvas.drawLine(59, h-58, w-59, h-58, gray);
-		canvas.drawLine(58, 59, 58, h-59, gray);
-		canvas.drawLine(w-58, 59, w-58, h-59, gray);
-		canvas.drawLine(58, 59, w-58, 59, gray);
-		canvas.drawLine(58, h-59, w-58, h-59, gray);
-		canvas.drawLine(59, 58, 59, h-58, gray);
-		canvas.drawLine(w-59, 58, w-59, h-58, gray);
+		canvas.drawLine(  dHp,   dV , w-dHp,   dV , gray);
+		canvas.drawLine(  dHp, h-dV , w-dHp, h-dV , gray);
+		canvas.drawLine(  dH ,   dVp,   dH , h-dVp, gray);
+		canvas.drawLine(w-dH ,   dVp, w-dH , h-dVp, gray);
+
+		canvas.drawLine(  dH ,   dVp, w-dH ,   dVp, gray);
+		canvas.drawLine(  dH , h-dVp, w-dH , h-dVp, gray);
+		canvas.drawLine(  dHp,   dV ,   dHp, h-dV , gray);
+		canvas.drawLine(w-dHp,   dV , w-dHp, h-dV , gray);
 
 		// perpendicular cut marks
-		canvas.drawLine(0, 88, 58, 88, gray);
-		canvas.drawLine(0, h-88, 58, h-88, gray);
-		canvas.drawLine(w-58, 88, w, 88, gray);
-		canvas.drawLine(w-58, h-88, w, h-88, gray);
-		canvas.drawLine(88, 0, 88, 58, gray);
-		canvas.drawLine(w-88, 0, w-88, 58, gray);
-		canvas.drawLine(88, h-58, 88, h, gray);
-		canvas.drawLine(w-88, h-58, w-88, h, gray);
-		canvas.drawLine(0, 89, 58, 89, gray);
-		canvas.drawLine(0, h-89, 58, h-89, gray);
-		canvas.drawLine(w-58, 89, w, 89, gray);
-		canvas.drawLine(w-58, h-89, w, h-89, gray);
-		canvas.drawLine(89, 0, 89, 58, gray);
-		canvas.drawLine(w-89, 0, w-89, 58, gray);
-		canvas.drawLine(89, h-58, 89, h, gray);
-		canvas.drawLine(w-89, h-58, w-89, h, gray);
+		canvas.drawLine(   0,   eV, dH,   eV, gray);
+		canvas.drawLine(   0, h-eV, dH, h-eV, gray);
+		canvas.drawLine(w-dH,   eV,  w,   eV, gray);
+		canvas.drawLine(w-dH, h-eV,  w, h-eV, gray);
+
+		canvas.drawLine(  eH,	 0,   eH, dV, gray);
+		canvas.drawLine(w-eH,	 0, w-eH, dV, gray);
+		canvas.drawLine(  eH, h-dV,   eH,  h, gray);
+		canvas.drawLine(w-eH, h-dV, w-eH,  h, gray);
+
+		canvas.drawLine(   0,   eVp, dH,   eVp, gray);
+		canvas.drawLine(   0, h-eVp, dH, h-eVp, gray);
+		canvas.drawLine(w-dH,   eVp,  w,   eVp, gray);
+		canvas.drawLine(w-dH, h-eVp,  w, h-eVp, gray);
+
+		canvas.drawLine(  eHp,	  0,   eHp, dV, gray);
+		canvas.drawLine(w-eHp,	  0, w-eHp, dV, gray);
+		canvas.drawLine(  eHp, h-dV,   eHp,  h, gray);
+		canvas.drawLine(w-eHp, h-dV, w-eHp,  h, gray);
 
 		// draw logo onto the canvas
-		logo.resampleToHeight(59);
+		logo.resampleToHeight(dVp);
 		canvas.draw(logo, 1, 1);
 
+		// draw picture size onto the canvas
+		canvas.drawText(sizeText, null, canvas.getWidth() - (dH * 4), canvas.getHeight() - 10, null, "Arial", dV - 8, true);
+
 		// draw the QR code onto the canvas
-		qrCode.resizeBy(2.0, 2.0);
+		qrCode.resizeBy(2, 2);
+		qrCode.rotateRight();
+		qrCode.rotateRight();
+		qrCode.expandTop(12, white);
+		qrCode.drawText(id, 3, null, null, 12, "Arial", 10, true);
+		qrCode.rotateLeft();
 		canvas.draw(qrCode, (canvas.getWidth() - qrCode.getWidth()) / 2, 4 + canvas.getHeight() - qrCode.getHeight());
 		qrCode.rotateRight();
 		canvas.draw(qrCode, -4, (canvas.getHeight() - qrCode.getHeight()) / 2);
