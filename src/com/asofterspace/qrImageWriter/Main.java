@@ -60,10 +60,19 @@ public class Main {
 		String sizeText = width_cm + " x " + height_cm + " cm";
 
 		// load the input pictures
+		System.out.println("Getting the image...");
 		Image canvas = ImageFile.readImageFromFile(WebAccessor.getLocalOrWebFile(picturePath));
 		Image logo = ImageFile.readImageFromFile(new File(logoPath));
 
+		// increase image size if necessary
+		System.out.println("Resizing the image...");
+		while (canvas.getWidth() < width_cm * 20) {
+			System.out.println("canvas.getWidth(): " + canvas.getWidth() + ", width_cm * 20: " + (width_cm * 20));
+			canvas.resampleBy(2.0, 2.0);
+		}
+
 		// generate QR code
+		System.out.println("Adding the QR codes and lines...");
 		Image qrCode = QrCodeFactory.createWhitespacedImageFromString(baseurl + id);
 
 		// calculate actual width etc.
@@ -150,6 +159,7 @@ public class Main {
 		canvas.draw(qrCode, 4 + canvas.getWidth() - qrCode.getWidth(), (canvas.getHeight() - qrCode.getHeight()) / 2);
 
 		// write output
+		System.out.println("Writing the output files...");
 		PpmFile outputPpmFile = new PpmFile("output.ppm");
 		outputPpmFile.assign(canvas);
 		outputPpmFile.save();
