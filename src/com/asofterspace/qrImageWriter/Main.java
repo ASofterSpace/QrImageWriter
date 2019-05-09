@@ -17,6 +17,7 @@ import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.ColorRGB;
 import com.asofterspace.toolbox.utils.Image;
 import com.asofterspace.toolbox.Utils;
+import com.asofterspace.toolbox.web.WebAccessor;
 
 import java.util.List;
 
@@ -41,6 +42,8 @@ public class Main {
 			}
 		}
 
+		WebAccessor.clearCache();
+
 		// load the input JSON
 		JsonFile inputJson = new JsonFile("input.json");
 		if (!inputJson.exists()) {
@@ -57,7 +60,7 @@ public class Main {
 		String sizeText = width_cm + " x " + height_cm + " cm";
 
 		// load the input pictures
-		Image canvas = ImageFile.readImageFromFile(new File(picturePath));
+		Image canvas = ImageFile.readImageFromFile(WebAccessor.getLocalOrWebFile(picturePath));
 		Image logo = ImageFile.readImageFromFile(new File(logoPath));
 
 		// generate QR code

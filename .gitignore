@@ -51,3 +51,4 @@ other
 *.json
 *.xml
 data
+cache
