@@ -25,8 +25,8 @@ import java.util.List;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "QR Image Writer";
-	public final static String VERSION_NUMBER = "0.0.0.2(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "4. May 2019 - 7. May 2019";
+	public final static String VERSION_NUMBER = "0.0.0.3(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "4. May 2019 - 11. May 2019";
 
 	public static void main(String[] args) {
 
@@ -65,11 +65,44 @@ public class Main {
 		Image logo = ImageFile.readImageFromFile(new File(logoPath));
 
 		// increase image size if necessary
+		// 120 cm wants to be 3720 px
+		// 100 cm wants to be 3130 px
+		//  90 cm wants to be 2834 px
+		//  80 cm wants to be 2539 px
+		//  70 cm wants to be 2244 px
+		//  60 cm wants to be 1949 px
+		//  50 cm wants to be 1653 px
+		// y = m x + n
+		// 1653 = 50 m + n
+		// 3720 = 120 m + n
+		// 1653 - 3720 = (50 - 120) m
+		// -2067 = -70 m
+		// 2067 / 70 = m
+		// 3720 = 120 (2067 / 70) + n
+		// 3720 - (12 / 7) 2067 = n
+		// m ~~  29.5285714
+		// n ~~ 176.5714286
+		// check:
+		// y = 29.5285714 * 120 + 176.5714286 = 3719.9999966 CHECK
+		// y = 29.5285714 * 100 + 176.5714286 = 3129.4285686 CHECK - if we are rounding up...
+		// y = 29.5285714 *  90 + 176.5714286 = 2834.1428546 CHECK - if we are rounding down xD
+		// y = 29.5285714 *  80 + 176.5714286 = 2538.8571406 CHECK
+		// y = 29.5285714 *  70 + 176.5714286 = 2243.5714266 CHECK
+		// y = 29.5285714 *  60 + 176.5714286 = 1948.2857126 CHECK - we again want to round up here
+		// y = 29.5285714 *  50 + 176.5714286 = 1652.9999986 CHECK
+		// soooo to get the rounding right, we want to add 0.3 to n, and then do mathematically sound rounding
+		// after that, we will expand by 89 px on each side!
 		System.out.println("Resizing the image...");
+		/*
 		while (canvas.getWidth() < width_cm * 20) {
 			System.out.println("canvas.getWidth(): " + canvas.getWidth() + ", width_cm * 20: " + (width_cm * 20));
 			canvas.resampleBy(2.0, 2.0);
 		}
+		*/
+		// resample, keeping the aspect ratio
+		int newWidth = (int) Math.round((29.5285714 * width_cm) + 176.8714286);
+		int newHeight = (int) Math.round((29.5285714 * height_cm) + 176.8714286);
+		canvas.resampleTo(newWidth, newHeight, true);
 
 		// generate QR code
 		System.out.println("Adding the QR codes and lines...");
@@ -78,6 +111,7 @@ public class Main {
 		// calculate actual width etc.
 		int width = canvas.getWidth();
 		int height = canvas.getHeight();
+		/*
 		// take width and height in cm and expand by 3 cm on each side
 		int eH = (width * 3) / width_cm; // expand horz
 		int eV = (height * 3) / height_cm; // expand vert
@@ -88,10 +122,19 @@ public class Main {
 		int dV = (height * 2) / height_cm; // dist vert
 		int dHp = dH + 1;
 		int dVp = dV + 1;
+		*/
+		int eH = 88;
+		int eV = 88;
+		int eHp = 89;
+		int eVp = 89;
+		int dH = 58;
+		int dV = 58;
+		int dHp = 59;
+		int dVp = 59;
 
 		// expand the base image
 		ColorRGB white = new ColorRGB(255, 255, 255);
-		canvas.expand(eV, eH, eV, eH, white);
+		canvas.expandBy(eVp, eHp, eVp, eHp, white);
 
 		// draw grid
 		int w = canvas.getWidth() - 1;
@@ -147,7 +190,7 @@ public class Main {
 		qrCode.resizeBy(2, 2);
 		qrCode.rotateRight();
 		qrCode.rotateRight();
-		qrCode.expandTop(12, white);
+		qrCode.expandTopBy(12, white);
 		qrCode.drawText(id, 3, null, null, 12, "Arial", 10, true);
 		qrCode.rotateLeft();
 		canvas.draw(qrCode, (canvas.getWidth() - qrCode.getWidth()) / 2, 4 + canvas.getHeight() - qrCode.getHeight());
