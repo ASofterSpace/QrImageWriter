@@ -25,8 +25,8 @@ import java.util.List;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "QR Image Writer";
-	public final static String VERSION_NUMBER = "0.0.0.4(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "4. May 2019 - 19. May 2019";
+	public final static String VERSION_NUMBER = "0.0.0.5(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "4. May 2019 - 23. May 2019";
 
 	public static void main(String[] args) {
 
