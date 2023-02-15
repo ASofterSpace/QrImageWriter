@@ -5,9 +5,7 @@
 package com.asofterspace.qrImageWriter;
 
 import com.asofterspace.toolbox.io.BinaryFile;
-import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.web.WebRequestFormData;
 import com.asofterspace.toolbox.web.WebRequestFormDataBlock;
 import com.asofterspace.toolbox.web.WebServer;

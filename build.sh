@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [[ ! -d ../Toolbox-Java ]]; then
-	echo "It looks like you did not yet get the Toolbox-Java project - please do so (and put it as a folder next to this folder.)"
-	exit
+    echo "It looks like you did not yet get the Toolbox-Java project - please do so (and put it as a folder next to this folder.)"
+    exit
 fi
 
 cd src/com/asofterspace
@@ -16,6 +16,7 @@ mkdir barcodes
 mkdir coders
 mkdir configuration
 mkdir gui
+mkdir images
 mkdir io
 mkdir utils
 mkdir web
@@ -27,6 +28,7 @@ cp ../Toolbox-Java/src/com/asofterspace/toolbox/barcodes/*.* src/com/asofterspac
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/coders/*.* src/com/asofterspace/toolbox/coders
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/configuration/*.* src/com/asofterspace/toolbox/configuration
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/gui/*.* src/com/asofterspace/toolbox/gui
+cp ../Toolbox-Java/src/com/asofterspace/toolbox/images/*.* src/com/asofterspace/toolbox/images
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/io/*.* src/com/asofterspace/toolbox/io
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/utils/*.* src/com/asofterspace/toolbox/utils
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/web/*.* src/com/asofterspace/toolbox/web

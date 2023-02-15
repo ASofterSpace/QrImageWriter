@@ -6,41 +6,49 @@ package com.asofterspace.qrImageWriter;
 
 import com.asofterspace.toolbox.barcodes.QrCode;
 import com.asofterspace.toolbox.barcodes.QrCodeFactory;
-import com.asofterspace.toolbox.io.BinaryFile;
-import com.asofterspace.toolbox.io.DefaultImageFile;
-import com.asofterspace.toolbox.io.Directory;
+import com.asofterspace.toolbox.images.ColorRGBA;
+import com.asofterspace.toolbox.images.DefaultImageFile;
+import com.asofterspace.toolbox.images.Image;
+import com.asofterspace.toolbox.images.ImageFile;
+import com.asofterspace.toolbox.images.ImageFileCtrl;
+import com.asofterspace.toolbox.images.PpmFile;
 import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.io.ImageFile;
 import com.asofterspace.toolbox.io.JsonFile;
-import com.asofterspace.toolbox.io.PpmFile;
-import com.asofterspace.toolbox.io.SimpleFile;
-import com.asofterspace.toolbox.utils.ColorRGB;
-import com.asofterspace.toolbox.utils.Image;
-import com.asofterspace.toolbox.Utils;
+import com.asofterspace.toolbox.io.JsonParseException;
 import com.asofterspace.toolbox.web.WebAccessor;
-
-import java.util.List;
 
 
 public class ImageConverter {
 
+	private ImageFileCtrl imageCtrl;
+
+
+	public ImageConverter() {
+		imageCtrl = new ImageFileCtrl();
+	}
+
 	public void convertOneFileBasedOnInput() {
 
-		// load the input JSON
-		JsonFile inputJson = new JsonFile("input.json");
-		if (!inputJson.exists()) {
-			System.out.println("No input found!");
-			System.out.println("Please put the input.json file in the folder of the QR Image Writer.");
-			return;
-		}
-		String baseurl = inputJson.getValue("baseurl");
-		String id = inputJson.getValue("id");
-		String picturePath = inputJson.getValue("picture");
-		String logoPath = inputJson.getValue("logo");
-		Integer width_cm = inputJson.getInteger("width");
-		Integer height_cm = inputJson.getInteger("height");
+		try {
+			// load the input JSON
+			JsonFile inputJson = new JsonFile("input.json");
+			if (!inputJson.exists()) {
+				System.out.println("No input found!");
+				System.out.println("Please put the input.json file in the folder of the QR Image Writer.");
+				return;
+			}
+			String baseurl = inputJson.getValue("baseurl");
+			String id = inputJson.getValue("id");
+			String picturePath = inputJson.getValue("picture");
+			String logoPath = inputJson.getValue("logo");
+			Integer width_cm = inputJson.getInteger("width");
+			Integer height_cm = inputJson.getInteger("height");
 
-		convertImage(baseurl, id, picturePath, logoPath, width_cm, height_cm, "output.png");
+			convertImage(baseurl, id, picturePath, logoPath, width_cm, height_cm, "output.png");
+
+		} catch (JsonParseException e) {
+			System.err.println("Caught JSON parse exception: " + e);
+		}
 	}
 
 	public void convertImage(String baseurl, String id, String picturePath, String logoPath, Integer width_cm, Integer height_cm, String outputPath) {
@@ -49,8 +57,9 @@ public class ImageConverter {
 
 		// load the input pictures
 		System.out.println("Getting the image...");
-		Image canvas = ImageFile.readImageFromFile(WebAccessor.getLocalOrWebFile(picturePath));
-		Image logo = ImageFile.readImageFromFile(new File(logoPath));
+
+		Image canvas = imageCtrl.loadImageFromFile(WebAccessor.getLocalOrWebFile(picturePath));
+		Image logo = imageCtrl.loadImageFromFile(new File(logoPath));
 
 		// increase image size if necessary
 		// 120 cm wants to be 3720 px
@@ -121,13 +130,13 @@ public class ImageConverter {
 		int dVp = 59;
 
 		// expand the base image
-		ColorRGB white = new ColorRGB(255, 255, 255);
+		ColorRGBA white = new ColorRGBA(255, 255, 255);
 		canvas.expandBy(eVp, eHp, eVp, eHp, white);
 
 		// draw grid
 		int w = canvas.getWidth() - 1;
 		int h = canvas.getHeight() - 1;
-		ColorRGB gray = new ColorRGB(121, 121, 121);
+		ColorRGBA gray = new ColorRGBA(121, 121, 121);
 
 		// very outer perimeter
 		canvas.drawLine(0, 0, w, 0, gray);

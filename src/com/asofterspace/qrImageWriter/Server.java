@@ -4,7 +4,6 @@
  */
 package com.asofterspace.qrImageWriter;
 
-import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.web.WebServer;
 import com.asofterspace.toolbox.web.WebServerRequestHandler;
 
